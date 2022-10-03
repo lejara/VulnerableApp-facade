@@ -12,7 +12,7 @@ import Footer from "./Components/Footer";
 import { Content } from "./Components/Content";
 import { getResource } from "./Utilities/Utils";
 import { VulnerabilityDefinitionResponse } from "./interface/GeneralContracts";
-//hey
+
 export default class App extends React.Component {
   state: GlobalState = {
     isSuccessfullyLoaded: false,

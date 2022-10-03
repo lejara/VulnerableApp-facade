@@ -9,11 +9,11 @@ jest.mock("../Utilities/Utils");
 
 describe("App", () => {
   const _renderAppFully = () => {
-    //mock it cuz getResource will not work
+    //mock getResource since it will not work during testing
     (getResource as jest.Mock).mockImplementation(
       (uri: string, callback: Function, isJson: boolean) => {
         //testFixture structure does not match the web response.
-        //so, we refractor it
+        //so, we restructure it
         const response = {
           VulnerableApp:
             testFixture.applicationData[0].vulnerabilityDefinitions,
@@ -60,34 +60,6 @@ describe("App", () => {
     return render(<App />);
   };
 
-  const _renderAppEmptyLevels = () => {
-    (getResource as jest.Mock).mockImplementation(
-      (uri: string, callback: Function, isJson: boolean) => {
-        const response = {
-          VulnerableApp:
-            testFixture.applicationData[0].vulnerabilityDefinitions,
-          "VulnerableApp-jsp":
-            testFixture.applicationData[1].vulnerabilityDefinitions,
-          "VulnerableApp-php":
-            testFixture.applicationData[2].vulnerabilityDefinitions,
-        };
-        for (const vul in response["VulnerableApp"]) {
-          response["VulnerableApp"][vul].levels = [];
-        }
-        for (const vul in response["VulnerableApp-jsp"]) {
-          response["VulnerableApp-jsp"][vul].levels = [];
-        }
-        for (const vul in response["VulnerableApp-php"]) {
-          response["VulnerableApp-php"][vul].levels = [];
-        }
-
-        callback({ isSuccessful: true, data: response });
-      }
-    );
-
-    return render(<App />);
-  };
-
   it("renders correctly", async () => {
     expect(_renderAppFully().container).toMatchSnapshot();
   });
@@ -116,12 +88,5 @@ describe("App", () => {
   it("does not render nav items when empty", async () => {
     _renderAppEmpty();
     expect(screen.queryByTestId(/VulnerableApp.CommandInjection/i)).toBeNull();
-  });
-
-  it("does not render nav items when levels are empty", async () => {
-    _renderAppEmptyLevels();
-    expect(
-      screen.queryByTestId(/VulnerableApp.CommandInjection.LEVEL_1/i)
-    ).toBeNull();
   });
 });

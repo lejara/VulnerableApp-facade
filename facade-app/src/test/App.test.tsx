@@ -31,7 +31,7 @@ describe("App", () => {
   };
 
   it("renders correctly", async () => {
-    expect(render(<App />).container).toMatchSnapshot();
+    expect(_renderApp().container).toMatchSnapshot();
   });
 
   // it("renders left nav container", () => {

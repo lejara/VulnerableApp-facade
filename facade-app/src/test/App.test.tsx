@@ -40,10 +40,20 @@ describe("App", () => {
     return render(<App />);
   };
 
+  const _renderAppNull = () => {
+    (getResource as jest.Mock).mockImplementation(
+      (uri: string, callback: Function, isJson: boolean) => {
+        callback({ isSuccessful: true, data: null });
+      }
+    );
+
+    return render(<App />);
+  };
+
   const _renderAppEmpty = () => {
     (getResource as jest.Mock).mockImplementation(
       (uri: string, callback: Function, isJson: boolean) => {
-        callback({ isSuccessful: true });
+        callback({ isSuccessful: true, data: {} });
       }
     );
 
@@ -54,7 +64,7 @@ describe("App", () => {
     expect(_renderAppFully().container).toMatchSnapshot();
   });
 
-  it("renders content", () => {
+  it("renders content on nav item click", () => {
     _renderAppFully();
 
     fireEvent(
@@ -65,13 +75,20 @@ describe("App", () => {
     expect(content).toBeInTheDocument();
   });
 
-  it("does not render nav when empty", async () => {
-    _renderAppEmpty();
+  it("does not render nav when data is null", async () => {
+    _renderAppNull();
     expect(screen.queryByTestId(/LEFT_NAV_CONTAINER/i)).toBeNull();
   });
 
   it("does not render nav when getResource failed", async () => {
     _renderAppFail();
     expect(screen.queryByTestId(/LEFT_NAV_CONTAINER/i)).toBeNull();
+  });
+
+  it("does not render nav items when empty", async () => {
+    _renderAppEmpty();
+    expect(
+      screen.queryByTestId(/VulnerableApp.CommandInjection.LEVEL_1/i)
+    ).toBeNull();
   });
 });

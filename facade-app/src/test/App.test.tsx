@@ -8,7 +8,7 @@ import App from "../App";
 jest.mock("../Utilities/Utils");
 
 describe("App", () => {
-  const _renderApp = () => {
+  const _renderAppFully = () => {
     //mock it cuz getResource will not work
     (getResource as jest.Mock).mockImplementation(
       (uri: string, callback: Function, isJson: boolean) => {
@@ -30,12 +30,32 @@ describe("App", () => {
     return render(<App />);
   };
 
+  const _renderAppFail = () => {
+    (getResource as jest.Mock).mockImplementation(
+      (uri: string, callback: Function, isJson: boolean) => {
+        callback({ isSuccessful: false, error: "error" });
+      }
+    );
+
+    return render(<App />);
+  };
+
+  const _renderAppEmpty = () => {
+    (getResource as jest.Mock).mockImplementation(
+      (uri: string, callback: Function, isJson: boolean) => {
+        callback({ isSuccessful: true });
+      }
+    );
+
+    return render(<App />);
+  };
+
   it("renders correctly", async () => {
-    expect(_renderApp().container).toMatchSnapshot();
+    expect(_renderAppFully().container).toMatchSnapshot();
   });
 
   it("renders content", () => {
-    _renderApp();
+    _renderAppFully();
 
     fireEvent(
       screen.getByTestId("VulnerableApp.CommandInjection.LEVEL_1"),
@@ -45,27 +65,13 @@ describe("App", () => {
     expect(content).toBeInTheDocument();
   });
 
-  // const inputs = [
-  //   ["CommandInjection"],
-  //   ["UnrestrictedFileUpload"],
-  //   ["JWTVulnerability"],
-  //   ["Http3xxStatusCodeBasedInjection"],
-  //   ["PathTraversal"],
-  //   ["RemoteFileInclusion"],
-  //   ["BlindSQLInjectionVulnerability"],
-  //   ["ErrorBasedSQLInjectionVulnerability"],
-  //   ["UnionBasedSQLInjectionVulnerability"],
-  //   ["SSRFVulnerability"],
-  //   ["PersistentXSSInHTMLTagVulnerability"],
-  //   ["XSSWithHtmlTagInjection"],
-  //   ["XSSInImgTagAttribute"],
-  //   ["XXEVulnerability"],
-  // ];
-  // it.each(inputs)(`should have sub item %s`, (text) => {
-  //   _renderApp();
+  it("does not render nav when empty", async () => {
+    _renderAppEmpty();
+    expect(screen.queryByTestId(/LEFT_NAV_CONTAINER/i)).toBeNull();
+  });
 
-  //   const item = screen.getByText(text);
-
-  //   expect(item).toBeInTheDocument();
-  // });
+  it("does not render nav when getResource failed", async () => {
+    _renderAppFail();
+    expect(screen.queryByTestId(/LEFT_NAV_CONTAINER/i)).toBeNull();
+  });
 });

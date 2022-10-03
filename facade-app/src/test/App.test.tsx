@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { getResource } from "../Utilities/Utils";
 import testFixture from "./fixtures";
 
@@ -34,11 +34,15 @@ describe("App", () => {
     expect(_renderApp().container).toMatchSnapshot();
   });
 
-  it("renders homepage", () => {
+  it("renders content", () => {
     _renderApp();
-    expect(
-      screen.queryByTestId(/VULNERABILITY_CONTENT_DESCRIPTION/i)
-    ).toBeNull();
+
+    fireEvent(
+      screen.getByTestId("VulnerableApp.CommandInjection.LEVEL_1"),
+      new MouseEvent("click", { bubbles: true, cancelable: true })
+    );
+    const content = screen.getByTestId("VULNERABILITY_CONTENT_DESCRIPTION");
+    expect(content).toBeInTheDocument();
   });
 
   // const inputs = [

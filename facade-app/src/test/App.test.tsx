@@ -36,8 +36,9 @@ describe("App", () => {
 
   it("renders homepage", () => {
     _renderApp();
-    const container = screen.getByTestId("HOME_PAGE_MAIN_CONTAINER");
-    expect(container).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(/VULNERABILITY_CONTENT_DESCRIPTION/i)
+    ).toBeNull();
   });
 
   // const inputs = [

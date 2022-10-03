@@ -34,11 +34,11 @@ describe("App", () => {
     expect(_renderApp().container).toMatchSnapshot();
   });
 
-  // it("renders left nav container", () => {
-  //   _renderApp();
-  //   const container = screen.getByTestId("LEFT_NAV_CONTAINER");
-  //   expect(container).toBeInTheDocument();
-  // });
+  it("renders homepage", () => {
+    _renderApp();
+    const container = screen.getByTestId("HOME_PAGE_MAIN_CONTAINER");
+    expect(container).toBeInTheDocument();
+  });
 
   // const inputs = [
   //   ["CommandInjection"],

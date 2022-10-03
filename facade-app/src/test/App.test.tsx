@@ -9,6 +9,7 @@ jest.mock("../Utilities/Utils");
 
 describe("App", () => {
   const _renderAppFully = () => {
+    //fgdfg
     //mock getResource since it will not work during testing
     (getResource as jest.Mock).mockImplementation(
       (uri: string, callback: Function, isJson: boolean) => {
